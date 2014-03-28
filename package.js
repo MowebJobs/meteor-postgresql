@@ -1,13 +1,17 @@
 Package.describe({
-  summary: "REPLACEME - What does this package (or the original one you're wrapping) do?"
+  summary: "A postgres connector for meteor"
 });
 
 Package.on_use(function (api, where) {
-  api.add_files('meteor-postgres.js', ['client', 'server']);
+  api.use([
+    'coffeescript'
+  ],['client','server']);
+
+  api.add_files([], ['client', 'server']);
 });
 
 Package.on_test(function (api) {
   api.use('meteor-postgres');
 
-  api.add_files('meteor-postgres_tests.js', ['client', 'server']);
+  api.add_files([], ['client', 'server']);
 });
