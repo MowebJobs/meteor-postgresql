@@ -4,11 +4,22 @@
     "basePackages": {
       "meteor-postgres": {
         "path": ".."
-      }
+      },
+      "collection-hooks": {}
     },
     "packages": {
       "meteor-postgres": {
         "path": ".."
+      },
+      "collection-hooks": {
+        "git": "https://github.com/matb33/meteor-collection-hooks.git",
+        "tag": "v0.6.3",
+        "commit": "70f2598bf991cb36effd72aea2555cba96f88355"
+      },
+      "collection-helpers": {
+        "git": "https://github.com/dburles/meteor-collection-helpers.git",
+        "tag": "v0.2.4",
+        "commit": "e10ac53aa03e9656ee8ecaff7b9054dcb3a8a791"
       }
     }
   }

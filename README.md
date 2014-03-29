@@ -12,6 +12,10 @@ To use [MoSQL](https://github.com/stripe/mosql) to replicate MongoDB documents i
 * Both databases are available on `localhost`
 * MongoDB is being populated by a Meteor application
 
+## PostgreSQL to MongoDB Replication
+
+PostgreSQL to MongoDB replication is achieved through PostgreSQL's native notification channels and `pg-connect` on the Meteor server.
+
 ## MongoDB to PostgreSQL Replication
 * Install MoSQL -> `$ gem install mosql`
     * You may have to install `libpq-dev` also -> `$ sudod apt-get install libpq-dev`
@@ -40,13 +44,6 @@ To use [MoSQL](https://github.com/stripe/mosql) to replicate MongoDB documents i
  INFO Mongoriver: Saved timestamp: seconds: 1395855786, increment: 1 (2014-03-26 10:43:06 -0700)
  INFO Mongoriver: Saved timestamp: seconds: 1395855861, increment: 1 (2014-03-26 10:44:21 -0700)
 ```
-
-## PostgreSQL to MongoDB Replication
-
-PostgreSQL to MongoDB replication is achieved through PostgreSQL's native notification channels and `pg-connect` on the Meteor server.
-
-
-
 
 ## Summary
 MongoDB is now writable from meteor and replicating to PostgreSQL.
