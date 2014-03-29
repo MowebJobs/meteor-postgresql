@@ -8,22 +8,27 @@ Package.on_use(function (api, where) {
     'coffeescript'
   ],['client','server']);
 
-  // [Npm Postgres client](https://www.npmjs.org/package/pg)
-  Npm.depends({pg: '2.11.1'});
+  Npm.depends({
+    // [Npm Postgres client](https://www.npmjs.org/package/pg)
+    pg: '2.11.1',
+    // [SQL ORM based on Backbone](http://bookshelfjs.org)
+    bookshelf: '0.6.8'
+  });
 
   api.add_files([
     'meteor-postgres.coffee'
-  ], ['client', 'server']);
+  ], ['server']);
 
   api.export([
+    // TODO : i dont want to export pg or pgConstring
     'pg',
     'pgConString',
+    'Bookshelf',
     'NotificationClient'
-  ],['server']);
+  ], ['server']);
 });
 
 Package.on_test(function (api) {
   api.use('meteor-postgres');
-
   api.add_files([], ['client', 'server']);
 });

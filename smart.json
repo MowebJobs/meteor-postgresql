@@ -1,9 +1,9 @@
 {
   "name": "meteor-postgres",
-  "description": "REPLACEME - What does this package (or the original one you're wrapping) do?",
-  "homepage": "",
-  "author": "Your Name <your@email> (http://yoursite)",
+  "description": "A reactive meteor postgres ORM",
+  "homepage": "http://github.com/austinrivas/meteor-postgres",
+  "author": "Austin Rivas <austinrivas@gmail.com> (http://github.com/austinrivas)",
   "version": "0.0.1",
-  "git": "",
+  "git": "http://github.com/austinrivas/meteor-postgres",
   "packages": {}
 }

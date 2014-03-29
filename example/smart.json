@@ -2,7 +2,6 @@
   "packages": {
     "meteor-postgres": {
       "path": ".."
-    },
-    "collection-hooks": {}
+    }
   }
 }
