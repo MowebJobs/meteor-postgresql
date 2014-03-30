@@ -1,8 +1,10 @@
-UserMeteorCollection = new Meteor.Collection 'Users'
+@UserMeteorCollection = new Meteor.Collection 'Users'
 
 if Meteor.isServer
+  @NotificationClient.query "LISTEN users"
+
   class Tweet extends Bookshelf.Model
-    tableName: 'Tweets'
+    tableName: 'tweets'
     users: ->
       return @belongsTo User, 'user_id'
 
@@ -10,19 +12,19 @@ if Meteor.isServer
     model: Tweet
 
   class User extends Bookshelf.Model
-    tableName: 'Users'
+    tableName: 'users'
     tweets: ->
       @hasMany Tweet, 'user_id'
     followers: ->
-      @belongsToMany FollowerUser, 'Followers', 'followee', 'follower'
+      @belongsToMany FollowerUser, 'followers', 'followee', 'follower'
     following: ->
-      @belongsToMany FollowerUser, 'Followers', 'follower', 'followee'
+      @belongsToMany FollowerUser, 'followers', 'follower', 'followee'
 
   class UserCollection extends Bookshelf.Collection
     model: User
 
   class FollowerUser extends Bookshelf.Model
-    tableName: 'Users'
+    tableName: 'users'
 
   Users = new UserCollection().fetch(
     withRelated: ['tweets', 'followers', 'following']
@@ -35,9 +37,21 @@ if Meteor.isServer
   UserMeteorCollection.allow
     insert: (userId, doc)->
       console.log 'UserMeteorCollection:insert'
-      console.log
-        userId: userId
-        doc: doc
+      new User().save _.pick(doc, ['username'])
+      .then( Meteor.bindEnvironment( (updatedModel) ->
+          console.log "UserMeteorCollection:insert:save:success"
+          updatedModel.fetch
+            withRelated: ['tweets', 'followers', 'following']
+          .then Meteor.bindEnvironment( (user) ->
+            console.log "UserMeteorCollection:insert:fetchRelated:success"
+            id = UserMeteorCollection.insert user.toJSON()
+            console.log "UserMeteorCollection:insert:id:#{id}"
+          )
+        )
+      , (err)->
+        console.log "UserMeteorCollection:insert:save:error"
+        console.log err
+      )
       return false
 
     update: (userId, docs, fields, modifier) ->

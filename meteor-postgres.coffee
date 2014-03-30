@@ -21,7 +21,7 @@ NotificationClient.on 'error', (err) -> throw err
 
 ###
   Bookshelf ORM Initialization
-     # [SQL ORM based on Backbone](http://bookshelfjs.org)
+    * [SQL ORM based on Backbone](http://bookshelfjs.org)
     * connect ORM to postgres
 ###
 Bookshelf = Npm.require 'bookshelf'
