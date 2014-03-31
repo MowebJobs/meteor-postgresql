@@ -56,24 +56,24 @@ class @User extends Model
       #   * and the write is invalidated on the client
       # Other allow rules may include role validation, write access, and much more
       User.meteorCollection.allow
-      # when a client inserts into the user collection
-      #   * userId is the user on the client
-      #     * userId is really useful for checking authorization on data changes
-      #   * doc is the MongoDB document being inserted
-      #     * this document has already been created on the client
-      #     * if this allow rule fails the client version will be invalidated and removed
+        # when a client inserts into the user collection
+        #   * userId is the user on the client
+        #     * userId is really useful for checking authorization on data changes
+        #   * doc is the MongoDB document being inserted
+        #     * this document has already been created on the client
+        #     * if this allow rule fails the client version will be invalidated and removed
         insert: (userId, doc)->
           # Create a new user from the MongoDB document
-          #   * TODO : the property picking needs to be abstracted
           # Calling save() persists the model to PostgreSQL
           # Notice that this only saves the model, not its related models
+          #   * TODO : the property picking needs to be abstracted
           new User().save _.pick(doc, ['username'])
           # Once the model is saved then insert to mongo
           .then( User.insertMongo
             , (err)->
               console.log "insert:save:error"
               console.log err
-            )
+          )
           return false
         update: (userId, docs, fields, modifier) ->
           console.log ":update"
@@ -114,13 +114,13 @@ class @User extends Model
           # Stop the handle when the user disconnects or stops the subscription.
           # This is really important or you will get a memory leak.
           @onStop -> handle.stop()
-
   @subscribe:
     all: ->
       if Meteor.isClient
         Meteor.subscribe "all_users"
     count: ->
       if Meteor.isClient
+        Session.setDefault "user_count", 'Waiting on Subsription'
         User.count = new Meteor.Collection "user-count"
         Meteor.subscribe "user_count"
         Deps.autorun (->
@@ -128,19 +128,17 @@ class @User extends Model
           unless users is undefined
             Session.set "user_count", users.count
         )
-
-  @setDefaults:
-    if Meteor.isClient
-      Session.setDefault "user_count", 'Waiting on Subsription'
-
   @syncronizeMongoDB: ->
     if Meteor.isServer
       User.collection().fetch(
         # build a complete user collection with all related fields
         # TODO : abstract the related fields declaration
         withRelated: ['tweets', 'followers', 'following']
-      ).then User.pushMongo
-
+      ).then( User.pushMongo
+        , (err)->
+          console.log "users:sync:error"
+          console.log err
+      )
   @initialize: ->
     if Meteor.isServer
       User.setAllowRules()
@@ -150,7 +148,6 @@ class @User extends Model
     if Meteor.isClient
       User.subscribe.all()
       User.subscribe.count()
-      User.setDefaults()
 
 ###### Views
 if Meteor.isClient
