@@ -17,7 +17,7 @@ Package.on_use(function (api, where) {
 
   api.add_files([
     'meteor-postgres.coffee'
-  ], ['server']);
+  ], ['client','server']);
 
   api.export([
     // TODO : i dont want to export pg or pgConstring
@@ -26,6 +26,11 @@ Package.on_use(function (api, where) {
     'Bookshelf',
     'NotificationClient'
   ], ['server']);
+
+  api.export([
+    'Model',
+    'Table'
+  ],['client','server']);
 });
 
 Package.on_test(function (api) {
