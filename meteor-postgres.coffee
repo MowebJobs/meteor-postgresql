@@ -1,6 +1,5 @@
 if Meteor.isClient
   Model = {}
-  Table = {}
 
 if Meteor.isServer
   # import npm postgres connect package [Npm Postgres client](https://www.npmjs.org/package/pg)
@@ -20,9 +19,11 @@ if Meteor.isServer
   # postgres notification event handler
   NotificationClient.on "notification", (notification) ->
     # write record to mongo or something
-    console.log "#{notification.channel}:notification"
+    console.log "notification:#{notification.channel}"
     console.log notification
-  NotificationClient.on 'error', (err) -> throw err
+  NotificationClient.on 'error', (err) ->
+    console.log "notification:error"
+    console.log err
 
   ###
     Bookshelf ORM Initialization
@@ -37,7 +38,6 @@ if Meteor.isServer
       user: 'austin'
 
   Model = Bookshelf.Model
-  Table = Bookshelf.Collection
 
 
 
