@@ -1,6 +1,6 @@
 {
   "packages": {
-    "meteor-postgresql": {
+    "postgresql": {
       "path": ".."
     }
   }
