@@ -5,4 +5,4 @@
 
 standard-app-packages
 coffeescript
-meteor-postgres
+meteor-postgresql

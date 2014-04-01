@@ -1,15 +1,10 @@
 Meteor.startup( ->
   # connect to postgres db with a user
   if Meteor.isServer
+    # con string is postgres://host/db
     pgConString = "postgres://localhost/austin"
+    console.log "Set pgConString to point at your db in example/main.coffee"
   else pgConString = null
-
-  # create a persistent connection with postgres to monitor notifications
-  Mediator.initialize(pgConString)
-
-  User.initialize()
-  User.subscribe.all()
-  User.subscribe.count()
 
   Foo.initialize(pgConString)
   Foo.publish.count()

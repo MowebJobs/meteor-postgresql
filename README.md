@@ -1,56 +1,99 @@
-## Goal
-To use [MoSQL](https://github.com/stripe/mosql) to replicate MongoDB documents into a PostgreSQL RDBMS.
+# Meteor PostgreSQL
 
-### Success Criteria
-1. row by row replication of MongoDB documents into PostgreSQL
-2. All fields not defined in the PostgreSQL schema should either be discarded or serialized and persisted.
-3. All failed writes should gracefully return an error that is catchable
+This package merely wraps the extremely well written and maintained npm package `pg` by [brianc](https://github.com/brianc)
 
-### Assumptions
-* You have MongoDB installed
-* You have PostgreSQL installed, and your user has a role defined
-* Both databases are available on `localhost`
-* MongoDB is being populated by a Meteor application
+## [PG Docs](https://github.com/brianc/node-postgres)
 
-## PostgreSQL to MongoDB Replication
+### Meteorite Installation
+`$ mrt add meteor-postgresql`
 
-PostgreSQL to MongoDB replication is achieved through PostgreSQL's native notification channels and `pg-connect` on the Meteor server.
+## Usage
 
-## MongoDB to PostgreSQL Replication
-* Install MoSQL -> `$ gem install mosql`
-    * You may have to install `libpq-dev` also -> `$ sudod apt-get install libpq-dev`
-* Create demo meteor app -> `$ mrt create example`
-* Setup Collections ( see `init_browsers.coffee` for an example how )
-* Create `collections.yml`
-* Setup MongoDB for replication
-    * `$ mongod --replSet meteor`
-        * If you receive an error here you may already have a replication instance running
-            * `$ sudo service mongodb stop`
-    * `$ mongo`
-        * `> var config = {_id: "meteor", members: [{_id: 0, host: "127.0.0.1:127017"}]}`
-        * `> rs.initiate(config)`
-* startup meteor running on local mongodb
-    * `$ PORT=3000 MONGO_URL=mongodb://localhost:27017/meteor meteor`
-* start `mosql` replicator
-    * `$ mosql`
+### Connecting
+This package exports `pg` to the server.
 
-`mosql` output should look something like this :
-```shell
- INFO MoSQL: Creating table 'pages'...
- INFO MoSQL: Creating table 'browsers'...
- INFO Mongoriver: Starting oplog stream from seconds: 1395855130, increment: 0
- INFO Mongoriver: Saved timestamp: seconds: 1395855130, increment: 1 (2014-03-26 10:32:10 -0700)
- INFO Mongoriver: Saved timestamp: seconds: 1395855611, increment: 1 (2014-03-26 10:40:11 -0700)
- INFO Mongoriver: Saved timestamp: seconds: 1395855786, increment: 1 (2014-03-26 10:43:06 -0700)
- INFO Mongoriver: Saved timestamp: seconds: 1395855861, increment: 1 (2014-03-26 10:44:21 -0700)
+`pg` must be initialized with your PostgreSQL connection information.
+
+An example connection that queries the db and then disconnects is provided below.
+
+```coffeescript
+pg.connect "postgres://localhost/db", (err, client, done) ->
+  console.log "select:start"
+  select = client.query
+    name: "db:select"
+    text: "SELECT * FROM some_table"
+  select.on 'row', (row, result) ->
+    console.log "select:row"
+    console.log row
+    console.log result
+  select.on 'error', (err) ->
+    console.log "select:error"
+    console.log err
+  select.on 'end', (result) ->
+    console.log "select:end"
+    console.log result
+  )
+  done()
 ```
 
-## Summary
-MongoDB is now writable from meteor and replicating to PostgreSQL.
+### Listening to PostgreSQL notifications
+In order to listen to notifications you must first have notification triggers setup on your PostgreSQL table.
 
-This can be verified by inserting mongo docs from the meteor app, and querying for them in postgres.
+I reactively publish and subscribe to PostgreSQL notifications using a Mediator class [like this one](https://github.com/lumapictures/module-mediator)
 
-## Resources
-* [MoSQL Readme](https://github.com/stripe/mosql/blob/master/README.md)
-* [Listen to Postgres triggers in NodeJS](http://bjorngylling.com/2011-04-13/postgres-listen-notify-with-node-js.html)
-* [Another way to listen to Postgres triggers in NodeJS](http://lheurt.blogspot.com/2011/11/listen-to-postgresql-inserts-with.html)
+If you already have a PostgreSQL Trigger firing notification then you just need to create a persistent `pg` client and listen on that channel.
+
+```coffeescript
+    # Create persistent connection to PostgreSQL
+    client = new pg.Client
+    client.connect()
+    # postgres notification event handler
+    client.on "postgres://localhost/austin", (notification) ->
+        # write record to MongoDB or something
+        console.log "notification:#{notification.channel}"
+        console.log notification
+    client.on 'error', (err) ->
+        console.log "client:error"
+        console.log err
+```
+
+Here is a trigger pattern that works for me :
+
+#### PostgreSQL Trigger
+```sql
+-- Trigger: watched_table on users
+-- DROP TRIGGER watched_table ON users;
+
+CREATE TRIGGER watched_table
+  AFTER INSERT OR UPDATE OR DELETE
+  ON users
+  FOR EACH ROW
+  EXECUTE PROCEDURE notify_trigger();
+```
+
+#### PostgreSQL Trigger Function
+```sql
+-- Function: notify_trigger()
+-- DROP FUNCTION notify_trigger();
+
+CREATE OR REPLACE FUNCTION notify_trigger()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  channel varchar;
+  JSON varchar;
+BEGIN
+  -- TG_TABLE_NAME is the name of the table who's trigger called this function
+  -- TG_OP is the operation that triggered this function: INSERT, UPDATE or DELETE.
+  -- channel is formatted like 'users_INSERT'
+  channel = TG_TABLE_NAME || '_' || TG_OP;
+  JSON = (SELECT row_to_json(new));
+  PERFORM pg_notify( channel, JSON );
+  RETURN new;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION notify_trigger()
+  OWNER TO austin;
+```

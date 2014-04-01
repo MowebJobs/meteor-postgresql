@@ -15,11 +15,9 @@ class @Foo
   @log: console.log
 
   # MongoDB
+  # this is also the PostgreSQL table name
   @collectionName: 'foo'
   @meteorCollection: new Meteor.Collection Foo.collectionName
-
-  # PostgreSQL
-  tableName: Foo.collectionName
 
   # Connect to the PostgreSQL notification channels
   @connect: _.once( ->
@@ -38,7 +36,7 @@ class @Foo
         Foo.log "#{Foo.collectionName}:notification:#{notification.channel}"
         Foo.log notification
       Foo.client.on 'error', (err) ->
-        Foo.log "mediator:client:error"
+        Foo.log "foo:client:error"
         Foo.log err
   )
 

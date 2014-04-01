@@ -1,6 +1,6 @@
 {
-  "name": "meteor-postgres",
-  "description": "A reactive meteor postgres ORM",
+  "name": "meteor-postgresql",
+  "description": "A meteor postgreSQL connector",
   "homepage": "http://github.com/austinrivas/meteor-postgres",
   "author": "Austin Rivas <austinrivas@gmail.com> (http://github.com/austinrivas)",
   "version": "0.0.1",
