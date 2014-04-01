@@ -4,7 +4,9 @@ Meteor.startup( ->
     pgConString = "postgres://localhost/austin"
   else pgConString = null
 
+  # create a persistent connection with postgres to monitor notifications
   Mediator.initialize(pgConString)
+
   User.initialize()
   User.subscribe.all()
   User.subscribe.count()
@@ -22,4 +24,4 @@ if Meteor.isClient
     if Foo.test
       Foo.meteorCollection.insert
         name: new Date()
-  ), 1000
+  ), Foo.interval

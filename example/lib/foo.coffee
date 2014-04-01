@@ -8,6 +8,10 @@ class @Foo
     Foo.sync()
   )
 
+  # test variables for inserting foos
+  @test: false
+  @interval: 1000
+
   # wrapping console log
   @log: console.log
 
