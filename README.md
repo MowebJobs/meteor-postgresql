@@ -1,11 +1,14 @@
-# Meteor PostgreSQL
+# Meteor PostgreSQL Connector
 
 This package merely wraps the extremely well written and maintained npm package `pg` by [brianc](https://github.com/brianc)
 
-## [PG Docs](https://github.com/brianc/node-postgres)
+## [pg Docs](https://github.com/brianc/node-postgres)
 
 ### Meteorite Installation
-`$ mrt add meteor-postgresql`
+`$ mrt add postgresql`
+
+### Example App
+`$ cd example && meteor`
 
 ## Usage
 
