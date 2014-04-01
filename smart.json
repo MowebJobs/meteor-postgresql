@@ -3,7 +3,7 @@
   "description": "A meteor postgreSQL connector",
   "homepage": "http://github.com/austinrivas/meteor-postgresql",
   "author": "Austin Rivas <austinrivas@gmail.com> (http://github.com/austinrivas)",
-  "version": "2.11.1",
+  "version": "2.11.1.1",
   "git": "http://github.com/austinrivas/meteor-postgresql",
   "packages": {}
 }

@@ -3,18 +3,13 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-  api.use([
-    'underscore',
-    'coffeescript'
-  ], ['client','server']);
-
   Npm.depends({
     // [Npm Postgres client](https://www.npmjs.org/package/pg)
     pg: '2.11.1'
   });
 
   api.add_files([
-    'postgresql.coffee'
+    'postgresql.js'
   ], ['server']);
 
   api.export([
