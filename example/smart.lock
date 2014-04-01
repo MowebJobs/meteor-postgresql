@@ -1,0 +1,15 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "meteor-postgresql": {
+        "path": ".."
+      }
+    },
+    "packages": {
+      "meteor-postgresql": {
+        "path": ".."
+      }
+    }
+  }
+}

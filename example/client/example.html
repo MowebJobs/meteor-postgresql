@@ -1,0 +1,16 @@
+<head>
+  <title>meteor-postgresql</title>
+</head>
+
+<body>
+  <pre>Modify Collections in Console to observe PostgreSQL replication</pre>
+  {{> foo }}
+</body>
+
+<template name="foo">
+    <pre>Foo Collection : {{count}}</pre>
+    <button type="button">{{#if test}}Stop Testing PostgreSQL Connection{{else}}Test PostgreSQL Connection{{/if}}</button>
+    {{#if test}}
+    <pre>Check your server log for PostgreSQL Notifications</pre>
+    {{/if}}
+</template>
