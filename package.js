@@ -6,7 +6,7 @@ Package.on_use(function (api, where) {
   api.use([
     'underscore',
     'coffeescript'
-  ],['client','server']);
+  ], ['client','server']);
 
   Npm.depends({
     // [Npm Postgres client](https://www.npmjs.org/package/pg)
@@ -16,21 +16,21 @@ Package.on_use(function (api, where) {
   });
 
   api.add_files([
-    'meteor-postgres.coffee'
+    'postgres.coffee',
+    'model.coffee',
+    'mediator.coffee',
   ], ['client','server']);
 
   api.export([
     // TODO : i dont want to export pg or pgConstring
     'pg',
-    'pgConString',
-    'Bookshelf',
-    'NotificationClient'
+    'Bookshelf'
   ], ['server']);
 
   api.export([
-    'Model',
-    'Table'
-  ],['client','server']);
+    'Mediator',
+    'Model'
+  ], ['client','server']);
 });
 
 Package.on_test(function (api) {
