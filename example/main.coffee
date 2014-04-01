@@ -17,10 +17,19 @@ Meteor.startup( ->
 )
 
 if Meteor.isClient
+  Template.foo.test = ->
+    return Session.get 'test'
+
   Template.foo.count = ->
     return Session.get "#{Foo.collectionName}_count"
 
+  Template.foo.events
+    'click button': ->
+      Foo.test = !Foo.test
+
+
   Meteor.setInterval (->
+    Session.set 'test', Foo.test
     if Foo.test
       Foo.meteorCollection.insert
         name: new Date()

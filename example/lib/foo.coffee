@@ -48,7 +48,7 @@ class @Foo
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_INSERT"'
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_UPDATE"'
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_DELETE"'
-      
+
   # sync mongoDB to PostgreSQL table
   @sync: _.once( ->
     if Meteor.isServer and Foo.meteorCollection
