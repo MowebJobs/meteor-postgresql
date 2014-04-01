@@ -8,9 +8,8 @@ class @Foo
     Foo.sync()
   )
 
-  # test variables for inserting foos
+  # test flag for inserting foos
   @test: false
-  @interval: 1000
 
   # wrapping console log
   @log: console.log
@@ -21,6 +20,7 @@ class @Foo
 
   # PostgreSQL
   tableName: Foo.collectionName
+
   # Connect to the PostgreSQL notification channels
   @connect: _.once( ->
     if Meteor.isServer
@@ -41,12 +41,14 @@ class @Foo
         Foo.log "mediator:client:error"
         Foo.log err
   )
+
   # Listen to the PostgreSQL notification channels defined by channel
   @listen: ->
     if Meteor.isServer and Foo.client
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_INSERT"'
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_UPDATE"'
       Foo.client.query 'LISTEN "' + Foo.collectionName + '_DELETE"'
+      
   # sync mongoDB to PostgreSQL table
   @sync: _.once( ->
     if Meteor.isServer and Foo.meteorCollection

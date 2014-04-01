@@ -6,6 +6,39 @@
     * Listens on all operations by default ( INSERT, UPDATE, DELETE
     * Persistent Connection to PostgreSQL
     * Reactive notification to client and server
+
+  Example PostgreSQL Trigger
+    -- Trigger: watched_table on users
+    -- DROP TRIGGER watched_table ON users;
+    CREATE TRIGGER watched_table
+      AFTER INSERT OR UPDATE OR DELETE
+      ON users
+      FOR EACH ROW
+      EXECUTE PROCEDURE notify_trigger();
+
+  Example PostgreSQL Trigger Function
+    -- Function: notify_trigger()
+    -- DROP FUNCTION notify_trigger();
+    CREATE OR REPLACE FUNCTION notify_trigger()
+      RETURNS trigger AS
+    $BODY$
+    DECLARE
+      channel varchar;
+      JSON varchar;
+    BEGIN
+      -- TG_TABLE_NAME is the name of the table who's trigger called this function
+      -- TG_OP is the operation that triggered this function: INSERT, UPDATE or DELETE.
+      -- channel is formatted like 'users_INSERT'
+      channel = TG_TABLE_NAME || '_' || TG_OP;
+      JSON = (SELECT row_to_json(new));
+      PERFORM pg_notify( channel, JSON );
+      RETURN new;
+    END;
+    $BODY$
+      LANGUAGE plpgsql VOLATILE
+      COST 100;
+    ALTER FUNCTION notify_trigger()
+      OWNER TO postgresql;
 ###
 class Mediator
   # Wrap console log, common best practice

@@ -24,4 +24,4 @@ if Meteor.isClient
     if Foo.test
       Foo.meteorCollection.insert
         name: new Date()
-  ), Foo.interval
+  ), 1000
