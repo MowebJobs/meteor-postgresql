@@ -10,6 +10,9 @@ This package merely wraps the extremely well written and maintained npm package 
 ### Example App
 `$ cd example && meteor`
 
+### Testing
+`$ cd example && meteor test-packages postgresql`
+
 ## Usage
 
 ### Connecting
